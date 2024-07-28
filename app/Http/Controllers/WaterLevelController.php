@@ -133,6 +133,4 @@ class WaterLevelController extends Controller
             'allLevels' => $waterLevels
         ]);
     }
-
 }
-
