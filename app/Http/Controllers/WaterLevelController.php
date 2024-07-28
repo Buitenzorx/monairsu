@@ -75,16 +75,16 @@ class WaterLevelController extends Controller
         $query = WaterLevel::orderBy('created_at', 'desc');
 
         // Apply filters if provided
-        if ($request->has('date')) {
+        if ($request->has('date') && $request->input('date')) {
             $query->whereDate('created_at', $request->input('date'));
         }
 
-        if ($request->has('start_time') && $request->has('end_time')) {
+        if ($request->has('start_time') && $request->has('end_time') && $request->input('start_time') && $request->input('end_time')) {
             $startTime = $request->input('start_time');
             $endTime = $request->input('end_time');
             $query->whereTime('created_at', '>=', $startTime)
                   ->whereTime('created_at', '<=', $endTime);
-        } elseif ($request->has('time')) {
+        } elseif ($request->has('time') && $request->input('time')) {
             $time = $request->input('time');
             $query->whereTime('created_at', '=', $time);
         }
@@ -133,5 +133,6 @@ class WaterLevelController extends Controller
             'allLevels' => $waterLevels
         ]);
     }
+
 }
 
