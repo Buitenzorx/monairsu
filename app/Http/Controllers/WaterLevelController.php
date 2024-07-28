@@ -78,9 +78,15 @@ class WaterLevelController extends Controller
         if ($request->has('date')) {
             $query->whereDate('created_at', $request->input('date'));
         }
-        if ($request->has('time')) {
+
+        if ($request->has('start_time') && $request->has('end_time')) {
+            $startTime = $request->input('start_time');
+            $endTime = $request->input('end_time');
+            $query->whereTime('created_at', '>=', $startTime)
+                  ->whereTime('created_at', '<=', $endTime);
+        } elseif ($request->has('time')) {
             $time = $request->input('time');
-            $query->whereTime('created_at', '>=', $time);
+            $query->whereTime('created_at', '=', $time);
         }
 
         $waterLevels = $query->get();
@@ -128,3 +134,4 @@ class WaterLevelController extends Controller
         ]);
     }
 }
+

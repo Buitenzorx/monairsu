@@ -12,19 +12,20 @@
                 <!-- Search Form -->
                 <form method="GET" action="{{ route('history') }}" class="mb-3">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <input type="date" name="date" class="form-control" value="{{ request('date') }}">
                         </div>
-                        <div class="col-md-4">
-                            <input type="time" name="time" class="form-control" value="{{ request('time') }}">
+                        <div class="col-md-3">
+                            <input type="time" name="start_time" class="form-control" value="{{ request('start_time') }}">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <input type="time" name="end_time" class="form-control" value="{{ request('end_time') }}">
+                        </div>
+                        <div class="col-md-3">
                             <button type="submit" class="btn btn-primary">Search</button>
                         </div>
                     </div>
                 </form>
-
-                
 
                 <!-- Scrollable Table for All Data -->
                 <div id="scrollable-data" style="overflow-y: auto; max-height: 400px; display: block;">
