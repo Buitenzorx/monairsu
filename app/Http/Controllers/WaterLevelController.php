@@ -76,7 +76,8 @@ class WaterLevelController extends Controller
 
         // Apply filters if provided
         if ($request->has('date') && $request->input('date')) {
-            $query->whereDate('created_at', $request->input('date'));
+            $date = Carbon::parse($request->input('date'))->format('Y-m-d');
+            $query->whereDate('created_at', $date);
         }
 
         if ($request->has('start_time') && $request->has('end_time') && $request->input('start_time') && $request->input('end_time')) {
