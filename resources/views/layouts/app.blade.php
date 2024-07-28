@@ -17,10 +17,10 @@
     </script>
     <style>
         body {
-            background-color: lightblue;
+            background-color: rgb(7, 29, 155);
         }
         .container {
-            background-color: lightblue;
+            background-color: rgb(7, 29, 155);
         }
         .card {
             background-color: white;
