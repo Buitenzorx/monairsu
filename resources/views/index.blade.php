@@ -51,6 +51,21 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function() {
+            var lastValue = null;
+
+            // Update data every second
+            setInterval(function() {
+                $.getJSON("monairsu/public/api/water-level", function(data) {
+                    if (lastValue !== data.level) {
+                        $("#nilai_jarak").text(data.level);
+                        $("#STATUS-JARAK").text(data.status);
+                        lastValue = data.level;
+                        updateChart(data);
+                    }
+                });
+            }, 1000);
+
+            // Initialize the chart
             var ctx = document.getElementById('waterLevelChart').getContext('2d');
             var waterLevelChart = new Chart(ctx, {
                 type: 'line',
@@ -82,6 +97,7 @@
                 }
             });
 
+            // Function to update the chart
             function updateChart(data) {
                 var time = new Date().toLocaleTimeString();
                 var level = data.level;
@@ -95,37 +111,6 @@
                 waterLevelChart.data.datasets[0].data.push(level);
                 waterLevelChart.update();
             }
-
-            // Load historical data on page load
-            $.getJSON("monairsu/public/api/water-level-data", function(data) {
-                data.forEach(function(item) {
-                    waterLevelChart.data.labels.push(item.time);
-                    waterLevelChart.data.datasets[0].data.push(item.level);
-                });
-                waterLevelChart.update();
-
-                if (data.length > 0) {
-                    $("#nilai_jarak").text(data[data.length - 1].level);
-                    $("#STATUS-JARAK").text(data[data.length - 1].status);
-                }
-            });
-
-            // Update data every second
-            setInterval(function() {
-                $.getJSON("monairsu/public/api/water-level", function(data) {
-                    if (waterLevelChart.data.labels.length >= 15) {
-                        waterLevelChart.data.labels.shift();
-                        waterLevelChart.data.datasets[0].data.shift();
-                    }
-                    var time = new Date().toLocaleTimeString();
-                    waterLevelChart.data.labels.push(time);
-                    waterLevelChart.data.datasets[0].data.push(data.level);
-                    waterLevelChart.update();
-
-                    $("#nilai_jarak").text(data.level);
-                    $("#STATUS-JARAK").text(data.status);
-                });
-            }, 1000);
         });
     </script>
 @endsection
