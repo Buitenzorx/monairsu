@@ -70,11 +70,22 @@ class WaterLevelController extends Controller
         return response()->json($waterLevels);
     }
 
-    public function history()
+    public function history(Request $request)
 {
-    $waterLevels = WaterLevel::orderBy('created_at', 'desc')->take(10)->get();
+    $query = WaterLevel::orderBy('created_at', 'desc');
+    
+    // Apply filters if provided
+    if ($request->has('date')) {
+        $query->whereDate('created_at', $request->input('date'));
+    }
+    if ($request->has('time')) {
+        $query->whereTime('created_at', '>=', $request->input('time'));
+    }
 
-    $waterLevels->transform(function ($waterLevel, $key) {
+    $waterLevels = $query->get();
+    $displayedLevels = $waterLevels->take(10);
+
+    $displayedLevels->transform(function ($waterLevel, $key) {
         $waterLevel->no = $key + 1;
         $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
         $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
@@ -92,7 +103,10 @@ class WaterLevelController extends Controller
         return $waterLevel;
     });
 
-    return view('history', compact('waterLevels'));
+    return view('history', [
+        'displayedLevels' => $displayedLevels,
+        'allLevels' => $waterLevels
+    ]);
 }
 
 }
