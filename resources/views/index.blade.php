@@ -5,7 +5,7 @@
 @section('content')
     <div class="container" style="text-align: center; margin-top: 10px;">
         <!-- Logo and Description -->
-        <img src="{{ asset('monairsu/public/images/logo.png') }}" style="width: 120px;">
+        <img src="{{ asset('monairsu/public/images/logo-kpspams.png') }}" style="width: 120px;">
         <p style="font-size: 50px; font-weight: bold; color: white;">PAM SIMAS SAGARA</p>
         <p style="font-size: 20px; font-weight: bold; color: white;">-DESA SINDANGKERTA, KECAMATAN SINDANGKERTA, KABUPATEN
             BANDUNG BARAT, JAWA BARAT-</p>
