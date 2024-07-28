@@ -120,7 +120,7 @@ class WaterLevelController extends Controller
                 $waterLevel->status = "AMAN";
             } elseif ($waterLevel->level > 40 && $waterLevel->level <= 60) {
                 $waterLevel->status = "RAWAN";
-            } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
+                        } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
                 $waterLevel->status = "KRITIS";
             } else {
                 $waterLevel->status = "RUSAK";
