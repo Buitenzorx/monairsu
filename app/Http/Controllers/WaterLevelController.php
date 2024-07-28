@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\WaterLevel;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class WaterLevelController extends Controller
@@ -60,10 +61,13 @@ class WaterLevelController extends Controller
 
     public function getWaterLevelData()
     {
-        $waterLevels = WaterLevel::orderBy('created_at', 'desc')
-            ->take(15)
-            ->get()
-            ->sortBy('created_at'); // To ensure the data is in ascending order
+        $now = now(); // Current time
+        $fifteenMinutesAgo = $now->copy()->subMinutes(15); // 15 minutes ago
+
+        $waterLevels = WaterLevel::select('level', DB::raw('DATE_FORMAT(created_at, "%H:%i:%s") as time'))
+            ->where('created_at', '>=', $fifteenMinutesAgo)
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         $waterLevels->transform(function ($waterLevel) {
             $waterLevel->time = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
