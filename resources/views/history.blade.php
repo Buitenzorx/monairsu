@@ -3,6 +3,35 @@
 @section('title', 'History')
 
 @section('content')
-    <h1>History</h1>
-    <!-- Add your content here -->
+    <div class="container" style="margin-top: 20px;">
+        <div class="card">
+            <div class="card-header" style="font-size: 30px; font-weight: bold; background-color: cornflowerblue; color: white;">
+                <h3>Data History</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Waktu</th>
+                            <th>Jarak</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($waterLevels as $waterLevel)
+                            <tr>
+                                <td>{{ $waterLevel->no }}</td>
+                                <td>{{ $waterLevel->tanggal }}</td>
+                                <td>{{ $waterLevel->waktu }}</td>
+                                <td>{{ $waterLevel->level }}</td>
+                                <td>{{ $waterLevel->status }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 @endsection

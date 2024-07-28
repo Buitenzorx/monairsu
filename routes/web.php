@@ -9,7 +9,7 @@ Route::get('/dashboard', [WaterLevelController::class, 'index'])->name('dashboar
 // Route untuk halaman statis lainnya
 Route::view('/', 'home')->name('home');
 Route::view('/about', 'about')->name('about');
-Route::view('/history', 'history')->name('history');
+Route::get('/history', [WaterLevelController::class, 'history'])->name('history');
 Route::view('/contact', 'contact')->name('contact');
 Route::get('/api/water-level-data', [WaterLevelController::class, 'getWaterLevelData']);
 

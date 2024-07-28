@@ -70,4 +70,28 @@ class WaterLevelController extends Controller
         return response()->json($waterLevels);
     }
 
+    public function history()
+    {
+        $waterLevels = WaterLevel::select('level', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $waterLevels->transform(function ($waterLevel, $key) {
+            $waterLevel->no = $key + 1;
+            $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
+            $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
+            if ($waterLevel->level < 40) {
+                $waterLevel->status = "AMAN";
+            } elseif ($waterLevel->level > 40 && $waterLevel->level <= 60) {
+                $waterLevel->status = "RAWAN";
+            } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
+                $waterLevel->status = "KRITIS";
+            } else {
+                $waterLevel->status = "RUSAK";
+            }
+            return $waterLevel;
+        });
+
+        return view('history', compact('waterLevels'));
+    }
 }
