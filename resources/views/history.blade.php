@@ -9,8 +9,8 @@
                 <h3>Data History</h3>
             </div>
             <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-dark">
                         <tr>
                             <th>No</th>
                             <th>Tanggal</th>
