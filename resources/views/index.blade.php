@@ -53,7 +53,7 @@
         $(document).ready(function() {
             // Update data every second
             setInterval(function() {
-                $.getJSON("/api/water-level", function(data) {
+                $.getJSON("/monairsu/public/api/water-level", function(data) {
                     $("#JARAK").text(data.level);
                     $("#STATUS-JARAK").text(data.status);
                 });
@@ -96,7 +96,7 @@
 
             // Function to update the chart
             function updateChart() {
-                $.getJSON("/api/water-level-data", function(data) {
+                $.getJSON("/monairsu/public/api/water-level", function(data) {
                     var labels = [];
                     var values = [];
                     data.forEach(function(entry) {

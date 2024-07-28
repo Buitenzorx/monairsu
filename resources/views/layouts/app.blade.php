@@ -7,14 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRkIbggVph5FhAB6AA6MOGBHRm5y0uC1knBGeox7D" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            setInterval(function(){
-                $("#JARAK").load("bacajarak.php");
-                $("#STATUS-JARAK").load("bacastatusjarak.php");
-            }, 1000);
-        });
-    </script>
     <style>
         body {
             background-color: rgb(7, 29, 155);
