@@ -84,7 +84,7 @@ class WaterLevelController extends Controller
             $startTime = $request->input('start_time');
             $endTime = $request->input('end_time');
             $query->whereTime('created_at', '>=', $startTime)
-                ->whereTime('created_at', '<=', $endTime);
+                  ->whereTime('created_at', '<=', $endTime);
         } elseif ($request->has('time') && $request->input('time')) {
             $time = $request->input('time');
             $query->whereTime('created_at', '=', $time);
