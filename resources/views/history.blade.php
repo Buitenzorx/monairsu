@@ -8,7 +8,7 @@
             <div class="card-header" style="font-size: 30px; font-weight: bold; background-color: cornflowerblue; color: white;">
                 <h3>Data History</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="overflow-x: auto;">
                 <table class="table table-bordered table-striped">
                     <thead class="thead-dark">
                         <tr>
@@ -31,9 +31,6 @@
                         @endforeach
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-center">
-                    {{ $waterLevels->links() }}
-                </div>
             </div>
         </div>
     </div>

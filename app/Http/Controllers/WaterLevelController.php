@@ -72,10 +72,10 @@ class WaterLevelController extends Controller
 
     public function history()
 {
-    $waterLevels = WaterLevel::orderBy('created_at', 'desc')->paginate(10);
+    $waterLevels = WaterLevel::orderBy('created_at', 'desc')->take(10)->get();
 
-    $waterLevels->getCollection()->transform(function ($waterLevel, $key) use ($waterLevels) {
-        $waterLevel->no = $key + 1 + ($waterLevels->currentPage() - 1) * $waterLevels->perPage();
+    $waterLevels->transform(function ($waterLevel, $key) {
+        $waterLevel->no = $key + 1;
         $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
         $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
         
