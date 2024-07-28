@@ -90,7 +90,26 @@ class WaterLevelController extends Controller
             $query->whereTime('created_at', '=', $time);
         }
 
-        $waterLevels = $query->paginate(10); // Paginate the results
+        $waterLevels = $query->get();
+        $displayedLevels = $waterLevels->take(10);
+
+        $displayedLevels->transform(function ($waterLevel, $key) {
+            $waterLevel->no = $key + 1;
+            $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('d-m-Y');
+            $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
+
+            if ($waterLevel->level < 40) {
+                $waterLevel->status = "AMAN";
+            } elseif ($waterLevel->level > 40 && $waterLevel->level <= 60) {
+                $waterLevel->status = "RAWAN";
+            } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
+                $waterLevel->status = "KRITIS";
+            } else {
+                $waterLevel->status = "RUSAK";
+            }
+
+            return $waterLevel;
+        });
 
         $waterLevels->transform(function ($waterLevel, $key) {
             $waterLevel->no = $key + 1;
@@ -110,6 +129,6 @@ class WaterLevelController extends Controller
             return $waterLevel;
         });
 
-        return view('history', compact('waterLevels'));
+        return view('history', compact('displayedLevels', 'waterLevels'));
     }
 }
