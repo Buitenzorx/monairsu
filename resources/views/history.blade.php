@@ -24,31 +24,7 @@
                     </div>
                 </form>
 
-                <!-- Table -->
-                <div style="overflow-x: auto;">
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>No</th>
-                                <th>Tanggal</th>
-                                <th>Waktu</th>
-                                <th>Jarak</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($displayedLevels as $waterLevel)
-                                <tr>
-                                    <td>{{ $waterLevel->no }}</td>
-                                    <td>{{ $waterLevel->tanggal }}</td>
-                                    <td>{{ $waterLevel->waktu }}</td>
-                                    <td>{{ $waterLevel->level }}</td>
-                                    <td>{{ $waterLevel->status }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                
 
                 <!-- Scrollable Table for All Data -->
                 <div id="scrollable-data" style="overflow-y: auto; max-height: 400px; display: block;">
