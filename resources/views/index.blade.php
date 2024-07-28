@@ -51,11 +51,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function() {
+            var lastValue = null;
+
             // Update data every second
             setInterval(function() {
-                $.getJSON("/monairsu/public/api/water-level", function(data) {
-                    $("#JARAK").text(data.level);
-                    $("#STATUS-JARAK").text(data.status);
+                $.getJSON("monairsu/public/api/water-level", function(data) {
+                    if (lastValue !== data.level) {
+                        $("#nilai_jarak").text(data.level);
+                        $("#STATUS-JARAK").text(data.status);
+                        lastValue = data.level;
+                        updateChart(data);
+                    }
                 });
             }, 1000);
 
@@ -92,33 +98,19 @@
             });
 
             // Function to update the chart
-            // ...
+            function updateChart(data) {
+                var time = new Date().toLocaleTimeString();
+                var level = data.level;
 
-            // Function to update the chart
-            function updateChart() {
-                $.getJSON("/monairsu/public/api/water-level-data", function(data) {
-                    var labels = [];
-                    var values = [];
-                    data.forEach(function(entry) {
-                        labels.push(entry.time); // Format time to WIB
-                        values.push(entry.level);
-                    });
+                if (waterLevelChart.data.labels.length >= 15) { // Limit data points to 15
+                    waterLevelChart.data.labels.shift();
+                    waterLevelChart.data.datasets[0].data.shift();
+                }
 
-                    // Batasi jumlah data yang ditampilkan pada grafik
-                    if (waterLevelChart.data.labels.length >= 15) { // 10 menit
-                        waterLevelChart.data.labels.shift();
-                        waterLevelChart.data.datasets[0].data.shift();
-                    }
-
-                    waterLevelChart.data.labels.push(labels[labels.length - 1]);
-                    waterLevelChart.data.datasets[0].data.push(values[values.length - 1]);
-                    waterLevelChart.update();
-                });
+                waterLevelChart.data.labels.push(time);
+                waterLevelChart.data.datasets[0].data.push(level);
+                waterLevelChart.update();
             }
-
-
-            updateChart(); // Initial load of chart
-            setInterval(updateChart, 1000); // Update chart every minute
         });
     </script>
 @endsection
