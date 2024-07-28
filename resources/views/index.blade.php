@@ -53,18 +53,6 @@
         $(document).ready(function() {
             var lastValue = null;
 
-            // Update data every second
-            setInterval(function() {
-                $.getJSON("monairsu/public/api/water-level", function(data) {
-                    if (lastValue !== data.level) {
-                        $("#nilai_jarak").text(data.level);
-                        $("#STATUS-JARAK").text(data.status);
-                        lastValue = data.level;
-                        updateChart(data);
-                    }
-                });
-            }, 1000);
-
             // Initialize the chart
             var ctx = document.getElementById('waterLevelChart').getContext('2d');
             var waterLevelChart = new Chart(ctx, {
@@ -96,6 +84,27 @@
                     }
                 }
             });
+
+            // Fetch the initial data
+            $.getJSON("monairsu/public/api/water-level-data", function(data) {
+                data.forEach(function(entry) {
+                    waterLevelChart.data.labels.push(entry.time);
+                    waterLevelChart.data.datasets[0].data.push(entry.level);
+                });
+                waterLevelChart.update();
+            });
+
+            // Update data every second
+            setInterval(function() {
+                $.getJSON("monairsu/public/api/water-level", function(data) {
+                    if (lastValue !== data.level) {
+                        $("#nilai_jarak").text(data.level);
+                        $("#STATUS-JARAK").text(data.status);
+                        lastValue = data.level;
+                        updateChart(data);
+                    }
+                });
+            }, 1000);
 
             // Function to update the chart
             function updateChart(data) {

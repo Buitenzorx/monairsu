@@ -61,19 +61,13 @@ class WaterLevelController extends Controller
 
     public function getWaterLevelData()
     {
-        $now = now(); // Current time
-        $fifteenMinutesAgo = $now->copy()->subMinutes(15); // 15 minutes ago
-
         $waterLevels = WaterLevel::select('level', DB::raw('DATE_FORMAT(created_at, "%H:%i:%s") as time'))
-            ->where('created_at', '>=', $fifteenMinutesAgo)
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        $waterLevels->transform(function ($waterLevel) {
-            $waterLevel->time = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
-            return $waterLevel;
-        });
+            ->orderBy('created_at', 'desc')
+            ->take(15)
+            ->get()
+            ->sortBy('created_at'); // Sorting back to ascending order for proper display
 
         return response()->json($waterLevels);
     }
+
 }
