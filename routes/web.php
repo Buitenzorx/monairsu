@@ -12,4 +12,5 @@ Route::view('/about', 'about')->name('about');
 Route::get('/history', [WaterLevelController::class, 'history'])->name('history');
 Route::view('/contact', 'contact')->name('contact');
 Route::get('/api/water-level-data', [WaterLevelController::class, 'getWaterLevelData']);
+Route::get('/api/water-level', [WaterLevelController::class, 'getWaterLevel']);
 
