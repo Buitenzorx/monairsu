@@ -51,10 +51,7 @@
                 </div>
 
                 <!-- Scrollable Table for All Data -->
-                <div class="mt-3">
-                    <button class="btn btn-secondary" id="loadMore">Load More</button>
-                </div>
-                <div id="scrollable-data" style="overflow-y: auto; max-height: 400px; display: none;">
+                <div id="scrollable-data" style="overflow-y: auto; max-height: 400px; display: block;">
                     <table class="table table-bordered table-striped mt-2">
                         <thead class="thead-dark">
                             <tr>
@@ -81,11 +78,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.getElementById('loadMore').addEventListener('click', function() {
-            var scrollableData = document.getElementById('scrollable-data');
-            scrollableData.style.display = scrollableData.style.display === 'none' ? 'block' : 'none';
-        });
-    </script>
 @endsection

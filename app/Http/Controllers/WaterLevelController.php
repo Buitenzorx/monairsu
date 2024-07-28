@@ -71,42 +71,60 @@ class WaterLevelController extends Controller
     }
 
     public function history(Request $request)
-{
-    $query = WaterLevel::orderBy('created_at', 'desc');
-    
-    // Apply filters if provided
-    if ($request->has('date')) {
-        $query->whereDate('created_at', $request->input('date'));
-    }
-    if ($request->has('time')) {
-        $query->whereTime('created_at', '>=', $request->input('time'));
-    }
+    {
+        $query = WaterLevel::orderBy('created_at', 'desc');
 
-    $waterLevels = $query->get();
-    $displayedLevels = $waterLevels->take(10);
-
-    $displayedLevels->transform(function ($waterLevel, $key) {
-        $waterLevel->no = $key + 1;
-        $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
-        $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
-        
-        if ($waterLevel->level < 40) {
-            $waterLevel->status = "AMAN";
-        } elseif ($waterLevel->level > 40 && $waterLevel->level <= 60) {
-            $waterLevel->status = "RAWAN";
-        } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
-            $waterLevel->status = "KRITIS";
-        } else {
-            $waterLevel->status = "RUSAK";
+        // Apply filters if provided
+        if ($request->has('date')) {
+            $query->whereDate('created_at', $request->input('date'));
+        }
+        if ($request->has('time')) {
+            $time = $request->input('time');
+            $query->whereTime('created_at', '>=', $time);
         }
 
-        return $waterLevel;
-    });
+        $waterLevels = $query->get();
+        $displayedLevels = $waterLevels->take(10);
 
-    return view('history', [
-        'displayedLevels' => $displayedLevels,
-        'allLevels' => $waterLevels
-    ]);
-}
+        $displayedLevels->transform(function ($waterLevel, $key) {
+            $waterLevel->no = $key + 1;
+            $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
+            $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
 
+            if ($waterLevel->level < 40) {
+                $waterLevel->status = "AMAN";
+            } elseif ($waterLevel->level > 40 && $waterLevel->level <= 60) {
+                $waterLevel->status = "RAWAN";
+            } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
+                $waterLevel->status = "KRITIS";
+            } else {
+                $waterLevel->status = "RUSAK";
+            }
+
+            return $waterLevel;
+        });
+
+        $waterLevels->transform(function ($waterLevel, $key) {
+            $waterLevel->no = $key + 1;
+            $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
+            $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
+
+            if ($waterLevel->level < 40) {
+                $waterLevel->status = "AMAN";
+            } elseif ($waterLevel->level > 40 && $waterLevel->level <= 60) {
+                $waterLevel->status = "RAWAN";
+            } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
+                $waterLevel->status = "KRITIS";
+            } else {
+                $waterLevel->status = "RUSAK";
+            }
+
+            return $waterLevel;
+        });
+
+        return view('history', [
+            'displayedLevels' => $displayedLevels,
+            'allLevels' => $waterLevels
+        ]);
+    }
 }
