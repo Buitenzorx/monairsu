@@ -31,6 +31,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center">
+                    {{ $waterLevels->links() }}
+                </div>
             </div>
         </div>
     </div>
