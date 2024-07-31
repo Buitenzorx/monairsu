@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -88,6 +87,14 @@ class WaterLevelController extends Controller
         if ($request->has('end_time') && $request->input('end_time')) {
             $endTime = $request->input('end_time');
             $query->whereTime('created_at', '<=', $endTime);
+        }
+
+        // If both start_time and end_time are present, apply both conditions
+        if ($request->has('start_time') && $request->has('end_time') && $request->input('start_time') && $request->input('end_time')) {
+            $startTime = $request->input('start_time');
+            $endTime = $request->input('end_time');
+            $query->whereTime('created_at', '>=', $startTime)
+                  ->whereTime('created_at', '<=', $endTime);
         }
 
         if ($request->has('time') && $request->input('time')) {
