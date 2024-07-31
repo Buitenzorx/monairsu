@@ -76,17 +76,17 @@ class WaterLevelController extends Controller
 
         // Apply filters if provided
         if ($request->has('date') && $request->input('date')) {
-            $date = Carbon::parse($request->input('date'), 'Asia/Jakarta')->format('Y-m-d');
+            $date = Carbon::parse($request->input('date'))->format('Y-m-d');
             $query->whereDate('created_at', $date);
         }
 
         if ($request->has('start_time') && $request->has('end_time') && $request->input('start_time') && $request->input('end_time')) {
-            $startTime = Carbon::parse($request->input('start_time'), 'Asia/Jakarta')->format('H:i:s');
-            $endTime = Carbon::parse($request->input('end_time'), 'Asia/Jakarta')->format('H:i:s');
+            $startTime = $request->input('start_time');
+            $endTime = $request->input('end_time');
             $query->whereTime('created_at', '>=', $startTime)
                   ->whereTime('created_at', '<=', $endTime);
         } elseif ($request->has('time') && $request->input('time')) {
-            $time = Carbon::parse($request->input('time'), 'Asia/Jakarta')->format('H:i:s');
+            $time = $request->input('time');
             $query->whereTime('created_at', '=', $time);
         }
 
