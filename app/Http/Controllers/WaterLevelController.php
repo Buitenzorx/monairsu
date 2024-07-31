@@ -83,22 +83,22 @@ class WaterLevelController extends Controller
     if ($request->has('start_time') && $request->has('end_time') && $request->input('start_time') && $request->input('end_time')) {
         $startTime = $request->input('start_time');
         $endTime = $request->input('end_time');
-        
-        // Ensure the timezone is applied to the filter
         $query->whereBetween('created_at', [
-            Carbon::parse($date . ' ' . $startTime)->timezone('Asia/Jakarta')->startOfDay(),
-            Carbon::parse($date . ' ' . $endTime)->timezone('Asia/Jakarta')->endOfDay()
+            Carbon::parse($date . ' ' . $startTime)->startOfDay(),
+            Carbon::parse($date . ' ' . $endTime)->endOfDay()
         ]);
     }
 
     // Get all levels with filter applied
     $waterLevels = $query->get();
+
+    // Take the latest 10 entries for display
     $displayedLevels = $waterLevels->take(10);
 
     // Transform data for display
     $displayedLevels->transform(function ($waterLevel, $key) {
         $waterLevel->no = $key + 1;
-        $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('Y-m-d');
+        $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
         $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
 
         if ($waterLevel->level < 40) {
@@ -119,6 +119,5 @@ class WaterLevelController extends Controller
         'allLevels' => $waterLevels
     ]);
 }
-
 
 }
