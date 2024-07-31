@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -79,25 +80,18 @@ class WaterLevelController extends Controller
             $query->whereDate('created_at', $date);
         }
 
-        if ($request->has('start_time') && $request->input('start_time')) {
-            $startTime = $request->input('start_time');
-            $query->whereTime('created_at', '>=', $startTime);
-        }
-
-        if ($request->has('end_time') && $request->input('end_time')) {
-            $endTime = $request->input('end_time');
-            $query->whereTime('created_at', '<=', $endTime);
-        }
-
-        // If both start_time and end_time are present, apply both conditions
         if ($request->has('start_time') && $request->has('end_time') && $request->input('start_time') && $request->input('end_time')) {
             $startTime = $request->input('start_time');
             $endTime = $request->input('end_time');
             $query->whereTime('created_at', '>=', $startTime)
                   ->whereTime('created_at', '<=', $endTime);
-        }
-
-        if ($request->has('time') && $request->input('time')) {
+        } elseif ($request->has('start_time') && $request->input('start_time')) {
+            $startTime = $request->input('start_time');
+            $query->whereTime('created_at', '>=', $startTime);
+        } elseif ($request->has('end_time') && $request->input('end_time')) {
+            $endTime = $request->input('end_time');
+            $query->whereTime('created_at', '<=', $endTime);
+        } elseif ($request->has('time') && $request->input('time')) {
             $time = $request->input('time');
             $query->whereTime('created_at', '=', $time);
         }
