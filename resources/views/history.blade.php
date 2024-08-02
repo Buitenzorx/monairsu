@@ -19,7 +19,7 @@
                             <input type="time" name="start_time" class="form-control" value="{{ request('start_time') }}">
                         </div>
                         <div class="col-md-3">
-                            <input type="time" name="end_time" class="form-control" value="{{ request('end_time') }}">
+                            <input type="time" name="end_time" class="form-control" value="{{ request('end_time') }} ">
                         </div>
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-primary">Search</button>
@@ -40,12 +40,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($allLevels as $waterLevel)
+                            @foreach ($allLevels as $waterLevel)
                                 <tr>
                                     <td>{{ $waterLevel->no }}</td>
                                     <td>{{ $waterLevel->tanggal }}</td>
                                     <td>{{ $waterLevel->waktu }}</td>
-                                    <td>{{ $waterLevel->level }}</td>
+                                    <td>{{ $waterLevel->level }} Meter</td>
                                     <td>{{ $waterLevel->status }}</td>
                                 </tr>
                             @endforeach

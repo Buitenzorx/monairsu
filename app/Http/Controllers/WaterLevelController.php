@@ -27,15 +27,7 @@ class WaterLevelController extends Controller
 
         $level = $latestWaterLevel->level;
 
-        if ($level < 40) {
-            $status = "AMAN";
-        } elseif ($level > 40 && $level <= 60) {
-            $status = "RAWAN";
-        } elseif ($level > 60 && $level <= 80) {
-            $status = "KRITIS";
-        } else {
-            $status = "RUSAK";
-        }
+        $status = $this->getLevelStatus($level);
 
         return response()->json([
             'level' => $level,
@@ -45,12 +37,15 @@ class WaterLevelController extends Controller
 
     public function store(Request $request)
     {
+        \Log::info('Request Data: ', $request->all());
+
         $request->validate([
             'level' => 'required|numeric'
         ]);
 
         $waterLevel = new WaterLevel();
         $waterLevel->level = $request->level;
+        $waterLevel->created_at = Carbon::now('Asia/Jakarta'); // Store time in WIB
         $waterLevel->save();
 
         return response()->json([
@@ -80,64 +75,53 @@ class WaterLevelController extends Controller
             $query->whereDate('created_at', $date);
         }
 
-        if ($request->has('start_time') && $request->has('end_time') && $request->input('start_time') && $request->input('end_time')) {
-            $startTime = $request->input('start_time');
-            $endTime = $request->input('end_time');
-            $query->whereTime('created_at', '>=', $startTime)
-                  ->whereTime('created_at', '<=', $endTime);
-        } elseif ($request->has('start_time') && $request->input('start_time')) {
-            $startTime = $request->input('start_time');
+        if ($request->has('start_time') && $request->input('start_time')) {
+            $startTime = Carbon::parse($request->input('start_time'))->format('H:i:s');
             $query->whereTime('created_at', '>=', $startTime);
-        } elseif ($request->has('end_time') && $request->input('end_time')) {
-            $endTime = $request->input('end_time');
+        }
+
+        if ($request->has('end_time') && $request->input('end_time')) {
+            $endTime = Carbon::parse($request->input('end_time'))->format('H:i:s');
             $query->whereTime('created_at', '<=', $endTime);
-        } elseif ($request->has('time') && $request->input('time')) {
+        }
+
+        if ($request->has('time') && $request->input('time')) {
             $time = $request->input('time');
             $query->whereTime('created_at', '=', $time);
         }
 
-        $waterLevels = $query->get();
-        $displayedLevels = $waterLevels->take(10);
+        $allLevels = $query->get();
 
-        $displayedLevels->transform(function ($waterLevel, $key) {
+        // Transform all levels to include additional fields
+        $allLevels->transform(function ($waterLevel, $key) {
             $waterLevel->no = $key + 1;
             $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
             $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
-
-            if ($waterLevel->level < 40) {
-                $waterLevel->status = "AMAN";
-            } elseif ($waterLevel->level > 40 && $waterLevel->level <= 60) {
-                $waterLevel->status = "RAWAN";
-            } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
-                $waterLevel->status = "KRITIS";
-            } else {
-                $waterLevel->status = "RUSAK";
-            }
-
+            $waterLevel->status = $this->getLevelStatus($waterLevel->level);
             return $waterLevel;
         });
 
-        $waterLevels->transform(function ($waterLevel, $key) {
-            $waterLevel->no = $key + 1;
-            $waterLevel->tanggal = Carbon::parse($waterLevel->created_at)->format('Y-m-d');
-            $waterLevel->waktu = Carbon::parse($waterLevel->created_at)->timezone('Asia/Jakarta')->format('H:i:s');
-
-            if ($waterLevel->level < 40) {
-                $waterLevel->status = "AMAN";
-            } elseif ($waterLevel->level > 40 && $waterLevel->level <= 60) {
-                $waterLevel->status = "RAWAN";
-            } elseif ($waterLevel->level > 60 && $waterLevel->level <= 80) {
-                $waterLevel->status = "KRITIS";
-            } else {
-                $waterLevel->status = "RUSAK";
-            }
-
-            return $waterLevel;
-        });
+        // Take first 10 for display (latest first)
+        $displayedLevels = $allLevels->take(10);
 
         return view('history', [
             'displayedLevels' => $displayedLevels,
-            'allLevels' => $waterLevels
+            'allLevels' => $allLevels
         ]);
+    }
+
+    private function getLevelStatus($level)
+    {
+        $maxHeight = 84; // Tinggi maksimum sumur dalam meter
+    
+        if ($level < 0.40 * $maxHeight) {
+            return "AMAN"; // H < 33.6 meter
+        } elseif ($level < 0.60 * $maxHeight) {
+            return "RAWAN"; // 33.6 ≤ H < 50.4 meter
+        } elseif ($level < 0.80 * $maxHeight) {
+            return "KRITIS"; // 50.4 ≤ H < 67.2 meter
+        } else {
+            return "RUSAK"; // H ≥ 67.2 meter
+        }
     }
 }
