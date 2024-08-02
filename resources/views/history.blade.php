@@ -14,12 +14,13 @@
                     <div class="row">
                         <div class="col-md-3">
                             <input type="date" name="date" class="form-control" value="{{ request('date') }}">
+                            Date
                         </div>
                         <div class="col-md-3">
-                            <input type="time" name="start_time" class="form-control" value="{{ request('start_time') }}">
+                            <input type="time" name="start_time" class="form-control" value="{{ request('start_time') }}" step="1">Start Time
                         </div>
                         <div class="col-md-3">
-                            <input type="time" name="end_time" class="form-control" value="{{ request('end_time') }} ">
+                            <input type="time" name="end_time" class="form-control" value="{{ request('end_time') }}" step="1"> End Time
                         </div>
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-primary">Search</button>
@@ -27,8 +28,8 @@
                     </div>
                 </form>
 
-                <!-- Scrollable Table for All Data -->
-                <div id="scrollable-data" style="overflow-y: auto; max-height: 400px; display: block;">
+                <!-- Show all data in scrollable table -->
+                <div id="all-data-scrollable" style="overflow-y: auto; max-height: 400px; display: block; margin-top: 20px;">
                     <table class="table table-bordered table-striped mt-2">
                         <thead class="thead-dark">
                             <tr>
@@ -40,7 +41,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($allLevels as $waterLevel)
+                            @foreach($allLevels as $waterLevel)
                                 <tr>
                                     <td>{{ $waterLevel->no }}</td>
                                     <td>{{ $waterLevel->tanggal }}</td>
@@ -55,4 +56,27 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function formatTimeToWIB(dateString) {
+            const date = new Date(dateString);
+            const options = {
+                timeZone: 'Asia/Jakarta',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            return date.toLocaleTimeString('id-ID', options);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const timeElements = document.querySelectorAll('td[data-time]');
+            timeElements.forEach(el => {
+                const originalTime = el.getAttribute('data-time');
+                const formattedTime = formatTimeToWIB(originalTime);
+                el.textContent = formattedTime;
+            });
+        });
+    </script>
 @endsection
