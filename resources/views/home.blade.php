@@ -11,12 +11,12 @@
         
         <!-- Logo -->
         <div style="text-align: center; margin-bottom: 20px;">
-            <img src="{{ asset('monairsu/public/img/Logo.png') }}" alt="Logo PAM SIMAS SAGARA" style="width: 200px;">
+            <img src="{{ asset('monairsu/public/img/logo-kpspams.png') }}" alt="Logo PAM SIMAS SAGARA" style="width: 200px;">
         </div>
         
         <!-- Peta -->
         <div style="text-align: center; margin-bottom: 20px;">
-            <img src="{{ asset('monairsu/public/img/peta.png') }}" alt="Peta Lokasi PAM SIMAS SAGARA" style="width: 350px;">
+            <img src="{{ asset('monairsu/public/img/Peta.png') }}" alt="Peta Lokasi PAM SIMAS SAGARA" style="width: 350px;">
         </div>
         
         <!-- Alamat -->
