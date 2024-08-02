@@ -11,7 +11,7 @@
         
         <!-- Logo -->
         <div style="text-align: center; margin-bottom: 20px;">
-            <img src="{{ asset('img/Alat.png') }}" alt="Alat" style="width: 600px;">
+            <img src="{{ asset('monairsu/public/img/Alat.png') }}" alt="Alat" style="width: 600px;">
         </div>
         
         
