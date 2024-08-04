@@ -9,10 +9,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            background-color: rgb(7, 29, 155);
+            background-color: rgb(58,124,165);
         }
         .container {
-            background-color: rgb(7, 29, 155);
+            background-color: rgb(58,124,165);
         }
         .card {
             background-color: white;
@@ -42,19 +42,19 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link" href="/">PAM Sagara</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/about">About</a>
+                    <a class="nav-link" href="/about">Tentang Alat</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                    <a class="nav-link" href="/dashboard">Monitoring</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/history">History</a>
+                    <a class="nav-link" href="/history">Riwayat</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contact">Contact</a>
+                    <a class="nav-link" href="/contact">Kontak</a>
                 </li>
             </ul>
         </div>

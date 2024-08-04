@@ -48,6 +48,9 @@ class WaterLevelController extends Controller
         $waterLevel->created_at = Carbon::now('Asia/Jakarta'); // Store time in WIB
         $waterLevel->save();
 
+        // Mengirim notifikasi berdasarkan kondisi level
+        $this->checkAndSendNotification($waterLevel);
+
         return response()->json([
             'message' => 'Water level recorded successfully',
             'data' => $waterLevel
@@ -122,6 +125,72 @@ class WaterLevelController extends Controller
             return "KRITIS"; // 50.4 ≤ H < 67.2 meter
         } else {
             return "RUSAK"; // H ≥ 67.2 meter
+        }
+    }
+
+    private function checkAndSendNotification($waterLevel)
+    {
+        $level = $waterLevel->level;
+        $maxHeight = 84; // Tinggi maksimum sumur dalam meter
+
+        if ($level < 0.80 * $maxHeight) {
+            $message = "[PERHATIAN] Ketinggian Air Kritis\nSumur PAM Sagara di Desa Sindangkerta\n\nKetinggian air sumur telah mencapai level kritis:\n- Ketinggian Air: {$level} meter\n\nMohon segera cek kondisi sumur untuk memastikan pasokan air tetap tersedia.\n\nTerima kasih.";
+            $this->sendNotificationMultipleTimes($message, 1);
+        } else {
+            $message = "[PERHATIAN] Ketinggian Air RUSAK\nSumur PAM Sagara di Desa Sindangkerta\n\nKetinggian air sumur telah mencapai level rusak:\n- Ketinggian Air: {$level} meter\n\nMohon segera ambil langkah yang telah dipersiapkan karena sumur sudah tidak layak digunakan.\n\nTerima kasih.";
+            $this->sendNotificationMultipleTimes($message, 1);
+        }
+    }
+
+    private function sendNotificationMultipleTimes($message, $times)
+    {
+        for ($i = 0; $i < $times; $i++) {
+            $this->sendWhatsAppNotification($message);
+        }
+    }
+
+    private function sendWhatsAppNotification($message)
+    {
+        $apiKey = 'UD#yNu+x__gYSD2dtAqr'; // Ganti dengan API key Fonnte Anda
+        $phoneNumber = '089515563894'; // Nomor WhatsApp tujuan
+
+        // Prepare data for WhatsApp notification
+        $postData = json_encode([
+            'target' => $phoneNumber,
+            'message' => $message,
+            'countryCode' => '62' // Optional: adjust according to your needs
+        ]);
+
+        // Send WhatsApp notification using cURL
+        $curl = curl_init();
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => 'https://api.fonnte.com/send',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $postData,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: ' . $apiKey,
+                    'Content-Type: application/json'
+                ),
+            )
+        );
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            \Log::error('Error sending WhatsApp notification: ' . $err);
+        } else {
+            \Log::info('WhatsApp notification sent successfully. Response: ' . $response);
         }
     }
 }
