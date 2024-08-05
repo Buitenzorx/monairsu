@@ -151,8 +151,8 @@ class WaterLevelController extends Controller
 
     private function sendWhatsAppNotification($message)
     {
-        $apiKey = 'UD#yNu+x__gYSD2dtAqr'; // Ganti dengan API key Fonnte Anda
-        $phoneNumber = '089515563894'; // Nomor WhatsApp tujuan
+        $apiKey = 'MzsBRot-qygPthpnnvmE'; // Ganti dengan API key Fonnte Anda
+        $phoneNumber = '089622116268'; // Nomor WhatsApp tujuan
 
         // Prepare data for WhatsApp notification
         $postData = json_encode([
