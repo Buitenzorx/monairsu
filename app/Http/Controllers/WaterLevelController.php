@@ -193,4 +193,80 @@ class WaterLevelController extends Controller
             \Log::info('WhatsApp notification sent successfully. Response: ' . $response);
         }
     }
+    public function downloadReport(Request $request)
+{
+    $startDate = $request->query('start_date');
+    $endDate = $request->query('end_date');
+
+    if (!$startDate || !$endDate) {
+        return redirect()->back()->withErrors('Please provide both start and end dates.');
+    }
+
+    $startDate = Carbon::parse($startDate)->startOfDay();
+    $endDate = Carbon::parse($endDate)->endOfDay();
+
+    $data = WaterLevel::whereBetween('created_at', [$startDate, $endDate])
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+    $fileName = 'report-' . Carbon::now()->format('Y-m-d') . '.csv';
+
+    $headers = [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => "attachment; filename=\"$fileName\"",
+    ];
+
+    $columns = ['No', 'Tanggal', 'Waktu', 'Jarak', 'Status'];
+
+    $callback = function() use ($data, $columns) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, $columns);
+
+        foreach ($data as $index => $record) {
+            $row = [
+                $index + 1,
+                Carbon::parse($record->created_at)->format('Y-m-d'),
+                Carbon::parse($record->created_at)->format('H:i:s'),
+                $record->level . ' Meter',
+                $this->getLevelStatus($record->level),
+            ];
+            fputcsv($file, $row);
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+public function getChartData(Request $request)
+{
+    $startDate = $request->query('start_date');
+    $endDate = $request->query('end_date');
+
+    if (!$startDate || !$endDate) {
+        return response()->json(['error' => 'Please provide both start and end dates.'], 400);
+    }
+
+    $startDate = Carbon::parse($startDate)->startOfDay();
+    $endDate = Carbon::parse($endDate)->endOfDay();
+
+    $data = WaterLevel::select(DB::raw('DATE(created_at) as date'), DB::raw('AVG(level) as average_level'))
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->groupBy(DB::raw('DATE(created_at)'))
+        ->orderBy('date')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'date' => Carbon::parse($item->date)->format('Y-m-d'),
+                'average_level' => $item->average_level,
+            ];
+        });
+
+    return response()->json($data);
+}
+
+
+
+
+    
 }
