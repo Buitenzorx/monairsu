@@ -25,22 +25,31 @@
             </div>
 
             <!-- Data Sensor -->
-            <div class="col-md-6">
+            <div class="col-md-6" style="margin-bottom: 50px">
                 <div class="card mb-3">
                     <div class="card-header"
                         style="font-size: 30px; font-weight: bold; background-color: cornflowerblue; color: white;">
-                        <h3>NILAI JARAK</h3>
+                        <h3>KETINGGIAN AIR SUMUR</h3>
                     </div>
                     <div class="card-body" id="JARAK" style="font-size: 30px; font-weight: bold;">
-                        <h1><span id="nilai_jarak">0</span></h1>
+                        <h1><span id="nilai_jarak">0</span> m</h1>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card mb-3">
                     <div class="card-header"
                         style="font-size: 30px; font-weight: bold; background-color: cornflowerblue; color: white;">
                         <h3>Status</h3>
                     </div>
                     <div class="card-body" id="STATUS-JARAK" style="font-size: 20px; font-weight: bold;">
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"
+                        style="font-size: 30px; font-weight: bold; background-color: cornflowerblue; color: white;">
+                        <h3>Volume</h3>
+                    </div>
+                    <div class="card-body" id="VOLUME" style="font-size: 30px; font-weight: bold;">
+                        <h1><span id="volume_air">0</span> m<sup>3</sup></h1>
                     </div>
                 </div>
             </div>
@@ -60,7 +69,7 @@
                 data: {
                     labels: [], // Time labels will be added dynamically
                     datasets: [{
-                        label: 'Nilai Jarak',
+                        label: 'Nilai Ketinggian Air Sumur (m)',
                         borderColor: 'cornflowerblue',
                         backgroundColor: 'rgba(100, 149, 237, 0.2)',
                         data: [] // Data values will be added dynamically
@@ -78,7 +87,7 @@
                         y: {
                             title: {
                                 display: true,
-                                text: 'Nilai Jarak'
+                                text: 'Nilai Ketinggian Air Sumur (m)'
                             }
                         }
                     }
@@ -100,6 +109,8 @@
                     if (lastValue !== data.level) {
                         $("#nilai_jarak").text(data.level);
                         $("#STATUS-JARAK").text(data.status);
+                        var volume = calculateVolume(data.level);
+                        $("#volume_air").text(volume.toFixed(2));
                         lastValue = data.level;
                         updateChart(data);
                     }
@@ -119,6 +130,13 @@
                 waterLevelChart.data.labels.push(time);
                 waterLevelChart.data.datasets[0].data.push(level);
                 waterLevelChart.update();
+            }
+
+            // Function to calculate volume
+            function calculateVolume(height) {
+                var radius = 8.25 / 100; // converting cm to meters
+                var volume = Math.PI * Math.pow(radius, 2) * height;
+                return volume;
             }
         });
     </script>
